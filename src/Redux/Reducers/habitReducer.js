@@ -10,6 +10,18 @@ const initialState = {
   activeDate: new Date().toISOString().slice(0, 10),
 };
 
+const getFutureDays = () => {
+  const futureDays = [];
+  for (let i = 0; i < 7; i++) {
+    futureDays.push(
+      new Date(new Date().getTime() + i * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .slice(0, 10)
+    );
+  }
+  return futureDays;
+};
+
 export const fetchHabitsAsync = createAsyncThunk("habit/all", async (key) => {
   return localforage.getItem(key);
 });
@@ -24,19 +36,20 @@ export const addHabitAsync = createAsyncThunk(
         localforage.setItem(day, updatedHabits);
       }
     });
+    const futureDays = getFutureDays();
+
+    // Function to add habits for future days
+    futureDays.forEach(async (day) => {
+      if (day !== activeDate) {
+        const serializeHabits = await localforage.getItem(day);
+        const updatedHabits = [...(serializeHabits || []), habitObj];
+        localforage.setItem(day, updatedHabits);
+      }
+    });
+
     const serializeHabits = await localforage.getItem(activeDate);
     const updatedHabits = [...(serializeHabits || []), habitObj];
     localforage.setItem(activeDate, updatedHabits);
-    return updatedHabits;
-  }
-);
-
-export const addCurrentDayHabitAsync = createAsyncThunk(
-  "habit/add",
-  async ({ habitObj, habitDays, currentDate }) => {
-    const serializeHabits = await localforage.getItem(currentDate);
-    const updatedHabits = [...(serializeHabits || []), habitObj];
-    localforage.setItem(currentDate, updatedHabits);
     return updatedHabits;
   }
 );
@@ -77,6 +90,15 @@ export const deleteHabitAllAsync = createAsyncThunk(
         await localforage.setItem(day, updatedHabits);
       }
     });
+    const futureDays = getFutureDays();
+    futureDays.map(async (day) => {
+      if (day !== activeDate) {
+        const habits = await localforage.getItem(day);
+        updatedHabits = habits.filter((habit) => habit.id !== id);
+        await localforage.setItem(day, updatedHabits);
+      }
+    });
+
     const habits = await localforage.getItem(activeDate);
     updatedHabits = habits.filter((habit) => habit.id !== id);
     await localforage.setItem(activeDate, updatedHabits);
