@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Habit.module.css";
 import { v4 as uuid } from "uuid";
 import Select from "react-dropdown-select";
@@ -6,6 +6,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addHabitAsync,
+  deleteHabitAllAsync,
   deleteHabitAsync,
   fetchHabitsAsync,
   habitSelector,
@@ -55,13 +56,17 @@ const Habit = () => {
     dispatch(deleteHabitAsync({ id, activeDate }));
   };
 
+  const handleDeleteHabitForAllDays = (habit) => {
+    let id = habit.id;
+    dispatch(deleteHabitAllAsync({ id, habitDays, activeDate }));
+  };
+
   const handleCurrentDate = (val) => {
     dispatch(setActiveDate(val));
   };
 
   useEffect(() => {
     dispatch(fetchHabitsAsync(activeDate));
-    console.log(activeDate);
   }, [activeDate, dispatch]);
 
   return (
@@ -140,8 +145,17 @@ const Habit = () => {
                     onClick={() => {
                       handleDeleteHabit(habit);
                     }}
+                    title="Delete the habit for current day."
                   >
                     Delete
+                  </li>
+                  <li
+                    onClick={() => {
+                      handleDeleteHabitForAllDays(habit);
+                    }}
+                    title="Detele the habit for all days."
+                  >
+                    Delete For Everyday
                   </li>
                 </ul>
               </details>

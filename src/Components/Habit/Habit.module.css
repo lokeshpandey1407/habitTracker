@@ -146,10 +146,12 @@ details > ul {
   width: max-content;
   background-color: rgb(99, 174, 99);
   color: #fff;
+  border-radius: 5px;
   overflow: hidden;
+  z-index: 100;
 }
 details > ul > li {
-  padding: 5px 15px;
+  padding: 10px 20px;
   cursor: pointer;
 }
 details ul li:hover {

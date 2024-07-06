@@ -6,6 +6,7 @@ const initialState = {
   habitDays: [],
   isHabitsLoading: false,
   isLoading: false,
+  currentDate: new Date().toISOString().slice(0, 10),
   activeDate: new Date().toISOString().slice(0, 10),
 };
 
@@ -30,6 +31,16 @@ export const addHabitAsync = createAsyncThunk(
   }
 );
 
+export const addCurrentDayHabitAsync = createAsyncThunk(
+  "habit/add",
+  async ({ habitObj, habitDays, currentDate }) => {
+    const serializeHabits = await localforage.getItem(currentDate);
+    const updatedHabits = [...(serializeHabits || []), habitObj];
+    localforage.setItem(currentDate, updatedHabits);
+    return updatedHabits;
+  }
+);
+
 export const updateHabitStatusAsync = createAsyncThunk(
   "habit/update",
   async ({ status, id, activeDate }) => {
@@ -50,6 +61,24 @@ export const deleteHabitAsync = createAsyncThunk(
   async ({ id, activeDate }) => {
     const habits = await localforage.getItem(activeDate);
     const updatedHabits = habits.filter((habit) => habit.id !== id);
+    await localforage.setItem(activeDate, updatedHabits);
+    return updatedHabits;
+  }
+);
+
+export const deleteHabitAllAsync = createAsyncThunk(
+  "habit/deleteAll",
+  async ({ id, habitDays, activeDate }) => {
+    let updatedHabits = [];
+    habitDays.map(async (day) => {
+      if (day !== activeDate) {
+        const habits = await localforage.getItem(day);
+        updatedHabits = habits.filter((habit) => habit.id !== id);
+        await localforage.setItem(day, updatedHabits);
+      }
+    });
+    const habits = await localforage.getItem(activeDate);
+    updatedHabits = habits.filter((habit) => habit.id !== id);
     await localforage.setItem(activeDate, updatedHabits);
     return updatedHabits;
   }
@@ -101,6 +130,13 @@ const habitSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(deleteHabitAsync.fulfilled, (state, action) => {
+        state.habits = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(deleteHabitAllAsync.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteHabitAllAsync.fulfilled, (state, action) => {
         state.habits = action.payload;
         state.isLoading = false;
       });

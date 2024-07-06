@@ -3,11 +3,12 @@ import "./App.css";
 import Navbar from "./Components/Navbar/Navbar";
 import localforage from "localforage";
 import { useEffect } from "react";
-import { setHabitDays } from "./Redux/Reducers/habitReducer";
-import { useDispatch } from "react-redux";
+import { habitSelector, setHabitDays } from "./Redux/Reducers/habitReducer";
+import { useDispatch, useSelector } from "react-redux";
 
 function App() {
   const dispatch = useDispatch();
+  const { currentDate } = useSelector(habitSelector);
   localforage.config({
     name: "Habit tracker",
     storeName: "habitTracker",
@@ -22,7 +23,7 @@ function App() {
   });
   useEffect(() => {
     dispatch(setHabitDays());
-  }, []);
+  }, [currentDate, dispatch]);
 
   return (
     <div className="App">
