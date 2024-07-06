@@ -11,3 +11,10 @@
   align-items: center;
   padding: 0px 1rem;
 }
+.logo {
+  text-decoration: none;
+  color: #343434;
+}
+.logo:hover {
+  text-decoration: underline;
+}
