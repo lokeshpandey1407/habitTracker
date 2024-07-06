@@ -13,7 +13,9 @@ import {
   setActiveDate,
   updateHabitStatusAsync,
 } from "../../Redux/Reducers/habitReducer";
+import toast, { Toaster } from "react-hot-toast";
 
+//Options Array to show dropdow options
 const options = [
   {
     value: "Done",
@@ -28,43 +30,55 @@ const options = [
     label: "None",
   },
 ];
+
+//Habit component
 const Habit = () => {
+  //Values from Redux store
   const { habits, activeDate, isLoading, isHabitsLoading, habitDays } =
     useSelector(habitSelector);
   const [habit, setHabit] = useState("");
 
   const dispatch = useDispatch();
 
+  //Function to add habit into habits array
   const handleAdd = () => {
     if (!habit.trim()) {
-      alert("Habit cannot be empty");
+      toast.error("Habit cannot be empty!!");
     } else {
       const habitObj = { id: uuid(), habit: habit, status: "None" };
       dispatch(addHabitAsync({ habitObj, habitDays, activeDate }));
       setHabit("");
+      toast.success("Habit added successfully.");
     }
   };
 
+  //Function to update habit status value
   const handleUpdateValue = (values, habit) => {
     const status = values[0].value;
     const id = habit.id;
     dispatch(updateHabitStatusAsync({ status, id, activeDate }));
   };
 
+  //Function to handle Delete habit for a day
   const handleDeleteHabit = (habit) => {
     let id = habit.id;
     dispatch(deleteHabitAsync({ id, activeDate }));
+    toast.success("Habit deleted successfully.");
   };
 
+  //Function to handle delete habits for all days
   const handleDeleteHabitForAllDays = (habit) => {
     let id = habit.id;
     dispatch(deleteHabitAllAsync({ id, habitDays, activeDate }));
+    toast.success("Habit deleted successfully for all days.");
   };
 
+  //Function to handle
   const handleCurrentDate = (val) => {
     dispatch(setActiveDate(val));
   };
 
+  //UseEffect functon to handle fetch habit
   useEffect(() => {
     dispatch(fetchHabitsAsync(activeDate));
   }, [activeDate, dispatch]);
@@ -163,6 +177,7 @@ const Habit = () => {
           );
         })}
       </div>
+      <Toaster />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./Home.module.css";
 import { Link } from "react-router-dom";
 
+//Home component for Home page
 const Home = () => {
   return (
     <div className={styles.homeContainer}>
@@ -14,14 +15,6 @@ const Home = () => {
       <Link className={styles.habitLink} to={"/habit"}>
         Begin Your Journey!
       </Link>
-      {/* <p>
-        Willpower can be strengthened with practice but can also be depleted.
-        Regular exercise of willpower can make it stronger over time
-      </p>
-      <p>
-        Many successful people attribute part of their success to a strong
-        morning routine that sets a positive tone for the day{" "}
-      </p> */}
     </div>
   );
 };
