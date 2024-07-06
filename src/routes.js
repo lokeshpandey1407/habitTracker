@@ -4,6 +4,7 @@ import Home from "./Components/Home/Home";
 const { createBrowserRouter } = require("react-router-dom");
 const { default: App } = require("./App");
 
+//Router configuration
 const routes = createBrowserRouter([
   {
     path: "/",

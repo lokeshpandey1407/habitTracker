@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 function App() {
   const dispatch = useDispatch();
   const { currentDate } = useSelector(habitSelector);
+
+  //Local Forage configuration function
   localforage.config({
     name: "Habit tracker",
     storeName: "habitTracker",

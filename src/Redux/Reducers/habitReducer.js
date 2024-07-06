@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import localforage from "localforage";
 
+//Initial State Object
 const initialState = {
   habits: [],
   habitDays: [],
@@ -10,6 +11,7 @@ const initialState = {
   activeDate: new Date().toISOString().slice(0, 10),
 };
 
+//Function to get future days
 const getFutureDays = () => {
   const futureDays = [];
   for (let i = 0; i < 7; i++) {
@@ -22,10 +24,12 @@ const getFutureDays = () => {
   return futureDays;
 };
 
+//Async function to fetch habits from Indexed DB using local forage library
 export const fetchHabitsAsync = createAsyncThunk("habit/all", async (key) => {
   return localforage.getItem(key);
 });
 
+//Async function to add a habit in Indexed DB and modify the habits state
 export const addHabitAsync = createAsyncThunk(
   "habit/add",
   async ({ habitObj, habitDays, activeDate }) => {
@@ -54,6 +58,7 @@ export const addHabitAsync = createAsyncThunk(
   }
 );
 
+//Async function to update the habit status
 export const updateHabitStatusAsync = createAsyncThunk(
   "habit/update",
   async ({ status, id, activeDate }) => {
@@ -69,6 +74,7 @@ export const updateHabitStatusAsync = createAsyncThunk(
   }
 );
 
+//Async function to delete the habit for current day
 export const deleteHabitAsync = createAsyncThunk(
   "habit/delete",
   async ({ id, activeDate }) => {
@@ -79,6 +85,7 @@ export const deleteHabitAsync = createAsyncThunk(
   }
 );
 
+//Async function to delete the habit for all days
 export const deleteHabitAllAsync = createAsyncThunk(
   "habit/deleteAll",
   async ({ id, habitDays, activeDate }) => {
@@ -106,13 +113,16 @@ export const deleteHabitAllAsync = createAsyncThunk(
   }
 );
 
+//Function to create habit slice
 const habitSlice = createSlice({
   name: "habit",
   initialState,
   reducers: {
+    //Reducer function to set active date
     setActiveDate: (state, action) => {
       state.activeDate = action.payload;
     },
+    //Reducer function to set the 7 days including 6 previous days
     setHabitDays: (state, action) => {
       const pastDays = [];
       for (let i = 0; i < 7; i++) {
@@ -165,6 +175,7 @@ const habitSlice = createSlice({
   },
 });
 
+//Exporting important functions and values
 export const habitReducer = habitSlice.reducer;
 export const habitSelector = (state) => state.habitReducer;
 export const { addHabit, setActiveDate, setHabitDays } = habitSlice.actions;

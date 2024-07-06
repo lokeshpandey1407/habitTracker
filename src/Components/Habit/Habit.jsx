@@ -15,7 +15,7 @@ import {
 } from "../../Redux/Reducers/habitReducer";
 import toast, { Toaster } from "react-hot-toast";
 
-//Options Array to show dropdow options
+//Options Array to show dropdown options
 const options = [
   {
     value: "Done",
