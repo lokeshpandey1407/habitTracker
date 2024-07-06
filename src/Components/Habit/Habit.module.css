@@ -55,7 +55,7 @@
   outline: 1px solid #343434;
 }
 .dateSliderContainer {
-  max-width: 1000px;
+  max-width: 750px;
   display: flex;
   justify-content: flex-start;
   align-items: center;

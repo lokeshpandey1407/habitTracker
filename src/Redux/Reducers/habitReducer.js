@@ -7,8 +7,8 @@ const initialState = {
   habitDays: [],
   isHabitsLoading: false,
   isLoading: false,
-  currentDate: new Date().toISOString().slice(0, 10),
-  activeDate: new Date().toISOString().slice(0, 10),
+  currentDate: new Date().toLocaleDateString().slice(0, 10),
+  activeDate: new Date().toLocaleDateString().slice(0, 10),
 };
 
 //Function to get future days
@@ -17,7 +17,7 @@ const getFutureDays = () => {
   for (let i = 0; i < 7; i++) {
     futureDays.push(
       new Date(new Date().getTime() + i * 24 * 60 * 60 * 1000)
-        .toISOString()
+        .toLocaleDateString()
         .slice(0, 10)
     );
   }
@@ -128,7 +128,7 @@ const habitSlice = createSlice({
       for (let i = 0; i < 7; i++) {
         pastDays.push(
           new Date(new Date().getTime() - i * 24 * 60 * 60 * 1000)
-            .toISOString()
+            .toLocaleDateString()
             .slice(0, 10)
         );
       }
